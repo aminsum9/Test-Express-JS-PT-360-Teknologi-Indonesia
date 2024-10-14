@@ -5,12 +5,12 @@ import Sequelize from 'sequelize';
 
 import sequelize from '../config/connectDB.js';
 
-class pricedetail extends Model { }
+class PriceDetail extends Model { }
 
-pricedetail.sequelize = sequelize;
-pricedetail.Sequelize = Sequelize;
+PriceDetail.sequelize = sequelize;
+PriceDetail.Sequelize = Sequelize;
 
-pricedetail.init({
+PriceDetail.init({
   Id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -18,6 +18,10 @@ pricedetail.init({
   },
   Price_Id: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'Price',
+      key: 'Id'
+    }
   },
   Tier: {
     type: DataTypes.STRING
@@ -32,4 +36,14 @@ pricedetail.init({
   timestamps: false
 });
 
-export default pricedetail;
+PriceDetail.associate = async (models) => {
+  var Price = await import('./price.js');
+
+  PriceDetail.belongsTo(Price.default, {
+    as: "PriceData",
+    foreignKey: 'Price_Id',
+    sourceKey: 'Id',
+  })
+}
+
+export default PriceDetail;

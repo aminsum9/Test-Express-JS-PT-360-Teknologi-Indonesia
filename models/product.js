@@ -4,9 +4,8 @@ import { DataTypes, Model } from 'sequelize';
 import Sequelize from 'sequelize';
 
 import sequelize from '../config/connectDB.js';
-import price from './price.js';
 
-class Product extends Model { }
+class Product extends Model {}
 
 Product.sequelize = sequelize;
 Product.Sequelize = Sequelize;
@@ -16,7 +15,7 @@ Product.init({
     Id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
     Name: {
         type: DataTypes.STRING,
@@ -27,13 +26,6 @@ Product.init({
     Description: {
         type: DataTypes.STRING
     },
-    Price: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Price', 
-            key: 'Product_Id' 
-        }
-    }
 }, {
     sequelize,
     modelName: 'Product',
@@ -41,12 +33,13 @@ Product.init({
     timestamps: false 
 });
 
-// Product.associate = (models) => {
-//     Product.hasMany(models.Price, {
-//         as: "Prices",
-//         foreignKey: 'Product_Id',
-//         sourceKey: 'Id',
-//     })
-// }
+Product.associate = async (models) => {
+    var Price = await import('./price.js');
+    Product.hasMany(Price.default, {
+        as: "Prices",
+        foreignKey: 'Product_Id',
+        sourceKey: 'Id',
+    })
+}
 
 export default Product;

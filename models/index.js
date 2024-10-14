@@ -1,31 +1,10 @@
-import sequelize from '../config/connectDB.js';
-import Product from '../models/product.js';
-import Price from '../models/price.js';
+import Product from './product.js';
+import Price from './price.js';
+import PriceDetail from './pricedetail.js';
 
-const models = {
-    Product,
-    Price
-};
+Product.associate({ Price });
+Price.associate({ Product, PriceDetail });
 
-// Product.associate(models);
-// Price.associate(models); 
+PriceDetail.associate({ Price });
 
-Product.hasMany(Price, {
-    as: "Prices",
-    foreignKey: 'Product_Id',
-    sourceKey: 'Id',
-})
-
-Price.belongsTo(Product, {
-    // as: "Prices",
-    foreignKey: 'Product_Id',
-    sourceKey: 'Id',
-})
-
-sequelize.sync({ force: true }).then(() => {
-    console.log('Database synchronized');
-}).catch(err => {
-    console.error('Error syncing database:', err);
-});
-
-export default models;
+export { Product, Price, PriceDetail };

@@ -4,9 +4,8 @@ import { DataTypes, Model } from 'sequelize';
 import Sequelize from 'sequelize';
 
 import sequelize from '../config/connectDB.js';
-import Product from './product.js';
 
-class Price extends Model { }
+class Price extends Model {}
 
 Price.sequelize = sequelize;
 Price.Sequelize = Sequelize;
@@ -34,18 +33,21 @@ Price.init({
   timestamps: false
 });
 
-// price.belongsTo(Product, {
-//   foreignKey: 'Product_Id',
-//   sourceKey: 'Id',
-// })
+Price.associate = async (models) => {
+  var Product = await import('./product.js');
+  var PriceDetail = await import('./pricedetail.js');
 
-// Price.associate = (models) => {
-//   Price.belongsTo(models.Product, {
-//       // as: "Prices",
-//       foreignKey: 'Product_Id',
-//       sourceKey: 'Id',
-//   })
-// }
+  Price.belongsTo(Product.default, {
+    as: "Product",
+    foreignKey: 'Product_Id',
+    sourceKey: 'Id',
+  })
+  Price.hasMany(PriceDetail.default, {
+      as: "PriceDetails",
+      foreignKey: 'Price_Id',
+      sourceKey: 'Id',
+  })
+}
 
 
 export default Price;

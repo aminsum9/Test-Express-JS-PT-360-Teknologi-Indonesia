@@ -1,5 +1,4 @@
-import Price from '../models/price.js';
-import Product from '../models/product.js';
+import {Product, Price, PriceDetail} from '../models/index.js';
 
 class ProductController {
 
@@ -15,12 +14,18 @@ class ProductController {
                         'Description',
                     ],
                 },
-                // include: [
-                //     {
-                //         model: Price, 
-                //         as: 'price',
-                //     }
-                // ]
+                include: [
+                    {
+                        model: Price, 
+                        as: 'Prices',
+                        include: [
+                            {
+                                model: PriceDetail, 
+                                as: 'PriceDetails',
+                            }
+                        ]
+                    }
+                ]
             })
             .then(async data => {
                 if (data) {
@@ -45,6 +50,9 @@ class ProductController {
 
         Product
             .findOne({
+                where: {
+                    Id: id
+                },
                 attributes: {
                     exclude: ['createdAt', 'updatedAt'],
                     include: [
@@ -54,15 +62,18 @@ class ProductController {
                         'Description',
                     ],
                 },
-                where: {
-                    Id: id
-                },
-                // include: [
-                //     {
-                //         model: Price, 
-                //         as: 'Prices',
-                //     }
-                // ]
+                include: [
+                    {
+                        model: Price, 
+                        as: 'Prices',
+                        include: [
+                            {
+                                model: PriceDetail, 
+                                as: 'PriceDetails',
+                            }
+                        ]
+                    }
+                ]
             })
             .then(async data => {
                 if (data) {
